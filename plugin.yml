@@ -1,0 +1,7 @@
+name: JH_AuthMeBridge
+main: JH_AuthMeBridge.spigot
+version: 1.0
+website: www.jhdev.xyz
+author: Jheyson
+description: Um plugin para ligaro AuthMe com seu bungeecord
+depend: [AuthMe]

@@ -1,0 +1,18 @@
+# Login and Registration Servers, players can enter these servers without being logged in
+Lobbyes:
+- Lobby
+
+# commands that can be used without being logged in
+CommandsAllowed:
+- "/login"
+- "/register"
+
+# Attempting to execute commands without being logged in
+NeedLoginToEnter: "&cYou must be logged in to this"
+
+# Need to be logged in to connect to other servers? recommend true
+NeedLoginServerChange: true
+
+# Trying to change server "NPC, Command, and others" without being logged in
+KickMessageNeedLogged: "&cYou must be logged in to enter this server"
+
