@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.common.io.ByteStreams;
@@ -98,18 +99,18 @@ public class bungee extends Plugin implements Listener  {
 		}
 	}
 	List<String> lobbyes = new ArrayList<>();
-	List<String> logados = new ArrayList<>();
+	HashMap<String, Boolean> logados = new HashMap<String, Boolean>();
 	List<String> comandos = new ArrayList<>();
     @EventHandler
     public void onPluginMessage(PluginMessageEvent e){
-    	if (e.getTag().equalsIgnoreCase("BungeeCord")) {
-            DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));
+    	if (e.getTag().equalsIgnoreCase("BungeeCord")) {          
             try {
+            	DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));
                 String channel = in.readUTF();
                 if(channel.equals("JH_AuthMeBridge")){
                     String input = in.readUTF();
                     if(isLogged(input))return;
-                    logados.add(input);
+                    logados.put(input, true);
                 }
             } catch (IOException e1) {
                 e1.printStackTrace();
@@ -119,18 +120,18 @@ public class bungee extends Plugin implements Listener  {
     }
     @EventHandler
 	public void onPlayerLeave(PlayerDisconnectEvent event) {
-    	if(logados.contains(event.getPlayer().getName())){
+    	if(isLogged(event.getPlayer())){
     		logados.remove(event.getPlayer().getName());
     	}
     }
     
     @EventHandler(priority=EventPriority.LOWEST)
-	public void onChat(ChatEvent event) {
+	public void onChat(ChatEvent event){
 		if (event.isCancelled())return;
 		if (!(event.getSender() instanceof ProxiedPlayer))return;
-		ProxiedPlayer player = (ProxiedPlayer) event.getSender();
+		ProxiedPlayer player = (ProxiedPlayer)event.getSender();
 		if(isLogged(player))return;
-		if(event.isCommand()) {			
+		if(event.isCommand()){			
 			String command = event.getMessage().split(" ")[0].toLowerCase();
 			if(comandos.contains(command)){
 				return;
@@ -145,20 +146,19 @@ public class bungee extends Plugin implements Listener  {
     
     @EventHandler
 	public void onServerSwitch(ServerSwitchEvent event) {
-    	if(isLogged(event.getPlayer())){
-    		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            DataOutputStream out = new DataOutputStream(stream);
+    	if(isLogged(event.getPlayer())){  		
             try {
+            	ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                DataOutputStream out = new DataOutputStream(stream);
                 out.writeUTF("JH_AuthMeBridge");
                 out.writeUTF(event.getPlayer().getName());
+                event.getPlayer().getServer().sendData("BungeeCord", stream.toByteArray());
             } catch (IOException e) {
                 e.printStackTrace();
-            }           
-            event.getPlayer().getServer().sendData("BungeeCord", stream.toByteArray());
+            }    
             return;
-    	}
-		String server = event.getPlayer().getServer().getInfo().getName();		
-		if(!lobbyes.contains(server.toLowerCase())) {
+    	}	
+		if(!lobbyes.contains(event.getPlayer().getServer().getInfo().getName().toLowerCase())) {
 			TextComponent kickReason = new TextComponent(ChatColor.translateAlternateColorCodes('&', getConfig().getString("KickMessageNeedLogged")));
 			kickReason.setColor(ChatColor.RED);
 			event.getPlayer().disconnect(kickReason);
@@ -166,16 +166,10 @@ public class bungee extends Plugin implements Listener  {
     }
     
     public Boolean isLogged(ProxiedPlayer player){
-    	if(logados.contains(player.getName())){
-    		return true;
-    	}
-    	return false;
+    	return logados.containsKey(player.getName());
     }
     
     public Boolean isLogged(String player){
-    	if(logados.contains(player)){
-    		return true;
-    	}
-    	return false;
+    	return logados.containsKey(player);
     }
 }
