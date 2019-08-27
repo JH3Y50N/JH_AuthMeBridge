@@ -33,6 +33,10 @@ import net.md_5.bungee.event.EventPriority;
 
 public class bungee extends Plugin implements Listener  {
 
+	/*
+	 Made by Jheyson Henrique
+	 */
+	
 	@Override
     public void onEnable() {
         getProxy().getPluginManager().registerListener(this, this);

@@ -20,7 +20,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import fr.xephi.authme.events.LoginEvent;
 
 public class spigot extends JavaPlugin implements Listener, PluginMessageListener {
-
+	
+	/*
+	 Made by Jheyson Henrique
+	 */
+	
 	@Override
 	public void onEnable() {
 		Bukkit.getPluginManager().registerEvents(this,  this);
@@ -67,7 +71,7 @@ public class spigot extends JavaPlugin implements Listener, PluginMessageListene
             				fr.xephi.authme.api.v3.AuthMeApi.getInstance().forceLogin(player);
             				logados.add(player.getName());
             			}
-            	    }.runTaskLater(this, 20L);               	
+            	    }.runTaskLater(this, 25L);               	
                 }
             }
         } catch (IOException e) {
