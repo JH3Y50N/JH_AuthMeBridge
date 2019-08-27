@@ -1,7 +1,7 @@
 name: JH_AuthMeBridge
 main: JH_AuthMeBridge.spigot
 version: 1.0.1
-website: www.jhdev.xyz
+website: www.jhdev.net
 author: Jheyson
 description: Plugin By www.jhdev.xyz Jheyson
 depend: [AuthMe]
