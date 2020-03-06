@@ -53,10 +53,12 @@ public class spigot extends JavaPlugin implements Listener, PluginMessageListene
 	}
 	
 	@Override
-	public void onPluginMessageReceived(String channel, Player p, byte[] message) {		
+	public void onPluginMessageReceived(String channel, Player p, byte[] message) {	
+		
         try {
         	DataInputStream in = new DataInputStream(new ByteArrayInputStream(message));
             String subchannel = in.readUTF();
+    		//System.out.println((p != null ? p.getName() : " not found ") + " received from channel" + channel + " and subchannel " + subchannel);
             if(subchannel.equals("JH_AuthMeBridge")){
                 String input = in.readUTF();    
                 if(isLogged(input))return;
@@ -67,7 +69,7 @@ public class spigot extends JavaPlugin implements Listener, PluginMessageListene
             			public void run()
             			{
 							// For older versions of Authme
-            				// fr.xephi.authme.api.API.forceLogin(player);
+            				//fr.xephi.authme.api.API.forceLogin(player);
             				fr.xephi.authme.api.v3.AuthMeApi.getInstance().forceLogin(player);
             				logados.add(player.getName());
             			}
