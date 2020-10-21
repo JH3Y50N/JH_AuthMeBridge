@@ -22,6 +22,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
+import net.md_5.bungee.api.event.ServerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
@@ -102,14 +103,16 @@ public class bungee extends Plugin implements Listener  {
 			e.printStackTrace();
 		}
 	}
-	List<String> lobbyes = new ArrayList<>();
-	HashMap<String, Boolean> logados = new HashMap<String, Boolean>();
-	List<String> comandos = new ArrayList<>();
+	
+	private List<String> lobbyes = new ArrayList<>();
+	private HashMap<String, Boolean> logados = new HashMap<String, Boolean>();
+	private List<String> comandos = new ArrayList<>();
+	
     @EventHandler
-    public void onPluginMessage(PluginMessageEvent e){
-    	if (e.getTag().equalsIgnoreCase("BungeeCord")) {          
+    public void onPluginMessage(PluginMessageEvent event){
+    	if (event.getTag().equalsIgnoreCase("BungeeCord")) {          
             try {
-            	DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));
+            	DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
                 String channel = in.readUTF();
                 if(channel.equals("JH_AuthMeBridge")){
                     String input = in.readUTF();
@@ -122,6 +125,7 @@ public class bungee extends Plugin implements Listener  {
       
         }
     }
+    
     @EventHandler
 	public void onPlayerLeave(PlayerDisconnectEvent event) {
     	if(isLogged(event.getPlayer())){
@@ -169,11 +173,11 @@ public class bungee extends Plugin implements Listener  {
 		}
     }
     
-    public Boolean isLogged(ProxiedPlayer player){
+    public boolean isLogged(ProxiedPlayer player){
     	return logados.containsKey(player.getName());
     }
     
-    public Boolean isLogged(String player){
+    public boolean isLogged(String player){
     	return logados.containsKey(player);
     }
 }

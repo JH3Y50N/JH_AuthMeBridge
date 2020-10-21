@@ -33,13 +33,14 @@ public class spigot extends JavaPlugin implements Listener, PluginMessageListene
 	}
 	
 	@EventHandler
-	public void onLogin(LoginEvent event){		
+	public void onLogin(LoginEvent event){
         try {
         	ByteArrayOutputStream b = new ByteArrayOutputStream();
             DataOutputStream out = new DataOutputStream(b);
             out.writeUTF("JH_AuthMeBridge");
             out.writeUTF(event.getPlayer().getName());
-            Bukkit.getServer().sendPluginMessage(this, "BungeeCord", b.toByteArray());
+            event.getPlayer().sendPluginMessage(this, "BungeeCord", b.toByteArray());
+            //Bukkit.getServer().sendPluginMessage(this, "BungeeCord", b.toByteArray());
         } catch (IOException e) {
             e.printStackTrace();
         }       
@@ -54,12 +55,12 @@ public class spigot extends JavaPlugin implements Listener, PluginMessageListene
 	
 	@Override
 	public void onPluginMessageReceived(String channel, Player p, byte[] message) {	
-		
+		if(p == null || !p.isOnline() || channel == null || channel.isEmpty())return;
         try {
         	DataInputStream in = new DataInputStream(new ByteArrayInputStream(message));
             String subchannel = in.readUTF();           
             // debug
-    		//System.out.println((p != null ? p.getName() : " not found ") + " received from channel" + channel + " and subchannel " + subchannel);
+    		//System.out.println((p != null ? p.getName() : " not found ") + " received from channel " + channel + " and subchannel " + subchannel);
             if(subchannel.equals("JH_AuthMeBridge")){
                 String input = in.readUTF();    
                 if(isLogged(input))return;
@@ -92,11 +93,11 @@ public class spigot extends JavaPlugin implements Listener, PluginMessageListene
 	
 	List<String> logados = new ArrayList<>();
     
-    public Boolean isLogged(Player player){
+    public boolean isLogged(Player player){
     	return logados.contains(player.getName());
     }
     
-    public Boolean isLogged(String player){
+    public boolean isLogged(String player){
     	return logados.contains(player);
     }
 }
